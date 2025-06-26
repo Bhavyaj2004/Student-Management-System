@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Management System</title>
+  <style>
+    <style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+    padding: 40px;
+    margin: 0;
+  }
+
+  h2 {
+    text-align: center;
+    color: #34495e;
+  }
+
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  input, button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+
+  input:focus {
+    border-color: #2980b9;
+    outline: none;
+  }
+
+  button {
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #1c5980;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    margin-top:
+lor: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2>Student Management System</h2>
+
+  <form id="studentForm">
+    <input type="number" placeholder="Roll No" id="roll_no" required />
+    <input type="text" placeholder="Name" id="name" required />
+    <input type="text" placeholder="Course" id="course" required />
+    <input type="text" placeholder="Grade" id="grade" required />
+    <button type="submit">Add Student</button>
+  </form>
+
+  <button onclick="fetchStudents()">View All Students</button>
+
+  <table id="studentsTable"></table>
+
+  <script>
+    const form = document.getElementById('studentForm');
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const data = {
+        roll_no: +document.getElementById('roll_no').value,
+        name: document.getElementById('name').value,
+        course: document.getElementById('course').value,
+        grade: document.getElementById('grade').value,
+      };
+
+      await fetch('/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      alert("Student added!");
+      form.reset();
+      fetchStudents();
+    };
+
+    async function fetchStudents() {
+      const res = await fetch('/students');
+      const students = await res.json();
+      const table = document.getElementById('studentsTable');
+      table.innerHTML = '<tr><th>Roll No</th><th>Name</th><th>Course</th><th>Grade</th></tr>' +
+        students.map(s => `<tr><td>${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td><td>${s[3]}</td></tr>`).join('');
+    }
+  </script>
+</body>
+</html>
